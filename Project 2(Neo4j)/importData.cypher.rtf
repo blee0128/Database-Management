@@ -1,0 +1,59 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww12740\viewh16880\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 //load the departments table onto the graph database\
+LOAD CSV with headers FROM 'file:///departments.csv' AS line\
+CREATE (:department \{ dcode:toInteger(line.dcode),dname:line.name,phone:toInteger(line.phone),college:line.college\});\
+\
+//load the students table onto the graph database\
+LOAD CSV with headers FROM 'file:///students.csv' AS s\
+CREATE (:student \{  snum:toInteger(s.snum),ssn:toInteger(s.ssn),sname:s.name,gender:s.gender,dob:s.dob,c_addr:s.c_addr,c_phone:toInteger(s.c_phone),p_addr:s.p_addr,p_phone:toInteger(s.p_phone)\});\
+\
+//load the degrees table onto the graph database\
+LOAD CSV with headers FROM 'file:///degrees.csv' AS line\
+CREATE (dgr:degree \{dname:line.name,level:line.level\})\
+WITH dgr, line\
+MATCH (dep: department \{dcode:toInteger(line.dcode)\})\
+CREATE (dgr)<-[:administer]-(dep);\
+\
+//load the courses table onto the graph database\
+LOAD CSV with headers FROM 'file:///courses.csv' AS line\
+CREATE (c: courses \{cnum:toInteger(line.number),cname:line.name,description:line.description,credithours:toInteger(line.credithours),clevel:line.level\})\
+WITH c, line\
+MATCH (dep: department \{dcode:toInteger(line.dcode)\})\
+CREATE (c)<-[:offers]-(dep);\
+\
+//load the major table onto the graph database\
+LOAD CSV with headers FROM 'file:///major.csv' AS line\
+MATCH (s: student \{snum:toInteger(line.snum)\})\
+MATCH (d: degree \{dname:line.name,level:line.level\})\
+CREATE (d)<-[:major]-(s);\
+\
+//load the minor table onto the graph database\
+LOAD CSV with headers FROM 'file:///minor.csv' AS line\
+MATCH (s: student \{snum:toInteger(line.snum)\})\
+MATCH (d: degree \{dname:line.name,level:line.level\})\
+CREATE (d)<-[:minor]-(s);\
+\
+//load the register table onto the graph database\
+LOAD CSV with headers FROM 'file:///register.csv' AS line\
+MATCH (s: student \{snum:toInteger(line.snum)\})\
+MATCH (c: courses \{cnum:toInteger(line.course_number)\})\
+CREATE (c)<-[:register\{regtime:line.regtime,grade:toInteger(line.grade)\}]-(s);\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+}

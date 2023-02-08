@@ -1,0 +1,45 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww13440\viewh7880\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 - Q1(correct)\
+MATCH (t:Tweet)<-[p:POSTED]-(u:User) WHERE t.month = '1' AND t.year = '2016' return toInteger(t.retweet_count),t.text,u.screen_name,u.category,u.sub_category ORDER BY toInteger(t.retweet_count) DESC LIMIT 5;\
+\
+-Q2(correct)\
+MATCH (s:State)<-[:FROM]-(:User)-[:POSTED]->(t:Tweet)<-[:TAGGED]-(h:Hashtag) WHERE NOT s.name = 'na' AND NOT h.name = '' AND t.year = '2016' RETURN count(DISTINCT s) AS statenum, COLLECT(DISTINCT s.name),toLower(h.name) ORDER BY statenum DESC LIMIT 5;\
+\
+-Q3(correct)\
+MATCH (h:Hashtag)-[:TAGGED]->(t:Tweet)<-[:POSTED]-(u:User)-[:FROM]->(s:State) WHERE (h.name = 'HappyNewYear' OR h.name = 'NewYear' OR h.name = 'NewYears' or h.name = 'NewYearsDay') return u.screen_name,s.name LIMIT 12;\
+\
+-Q4(correct)\
+- When subcategory = \'91GOP\'92\
+MATCH (u:User) WHERE u.sub_category = 'GOP' return u.screen_name,u.sub_category,u.followers ORDER BY toInteger(u.followers) DESC LIMIT 5;\
+\
+- When subcategory = \'91Democrat\'92\
+MATCH (u:User) WHERE u.sub_category = 'democrat' return u.screen_name,u.sub_category,u.followers ORDER BY toInteger(u.followers) DESC LIMIT 5;\
+\
+-Q5(correct)\
+MATCH (h:Hashtag)-[tg:TAGGED]->(t:Tweet)<-[:POSTED]-(u:User)-[:FROM]->(s:State) WHERE (s.name = 'Ohio' OR s.name = 'Alaska' OR s.name = 'Alabama') AND t.month = '1' AND t.year = '2016' AND NOT h.name = '' return DISTINCT toLower(h.name),s.name;\
+\
+-Q6(correct)\
+-first solution\
+MATCH (h:Hashtag)-[:TAGGED]->(t:Tweet)<-[:POSTED]-(u:User) WHERE u.sub_category = 'democrat' AND h.name = 'Ohio' AND t.month = '1' AND t.year = '2016' return t.text,h.name,u.screen_name,u.sub_category ORDER BY toInteger(u.followers) DESC LIMIT 5;\
+\
+-second solution\
+MATCH (h:Hashtag)-[:TAGGED]->(t:Tweet)<-[:POSTED]-(u:User)-[:FROM]->(s:State) WHERE (u.sub_category = 'democrat' OR u.sub_category = 'GOP') AND h.name = 'Ohio' AND t.month = '1' AND t.year = '2016' AND s.name = 'Ohio' return t.text,h.name,u.screen_name,u.sub_category ORDER BY toInteger(u.followers) DESC LIMIT 5;\
+\
+-Q7(correct)\
+MATCH (ul:Url)<-[:URL_USED]-(t:Tweet)<-[:POSTED]-(u:User)-[:FROM]->(s:State) WHERE u.sub_category = 'GOP' AND t.month = '1' AND t.year = '2016' AND NOT ul.url = '' return u.screen_name,s.name,COLLECT(DISTINCT ul.url);\
+\
+-Q8(correct)\
+\pard\pardeftab720\partightenfactor0
+\cf0 MATCH (u:User)-[:POSTED]->(t:Tweet)-[:MENTIONED]->(um:User) WHERE u.sub_category = 'GOP'AND t.month = '1' AND t.year = '2016' AND NOT um.screen_name = "" WITH um.screen_name AS mentionedUser,um.location AS state,COLLECT(DISTINCT u.screen_name) AS listMentioningUsers,count(t) AS numTweets RETURN mentionedUser,state,listMentioningUsers ORDER BY numTweets DESC LIMIT 5;\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+-Q9(correct)\
+MATCH (h:Hashtag)-[tg:TAGGED]->(t:Tweet)<-[:POSTED]-(u:User) WHERE u.sub_category = 'GOP' AND (t.month = '1' OR t.month = '2' OR t.month = '3') AND t.year = '2016' AND NOT h.name = '' return toLower(h.name),count(h.name) AS num_uses ORDER BY num_uses DESC LIMIT 5;\
+}

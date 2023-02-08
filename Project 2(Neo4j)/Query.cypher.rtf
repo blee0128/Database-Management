@@ -1,0 +1,89 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 //Q1\
+MATCH (s:student)\
+where s.sname='Becky'\
+return s.snum,s.ssn;\
+\
+//Q2\
+MATCH (d:degree)<-[m:major]-(s:student)\
+where s.ssn = 123097834\
+return d.dname,d.level;\
+\
+//Q3\
+MATCH (c:courses)<-[o:offers]-(d:department)\
+where d.dname = 'Computer Science'\
+return c.cname;\
+\
+//Q4\
+MATCH (deg:degree)--(d:department)\
+where d.dname = 'Computer Science'\
+return deg.dname,deg.level;\
+\
+//Q5\
+MATCH (d:degree)<-[m:minor]-(s:student)\
+return s.sname;\
+\
+//Q6\
+MATCH (d:degree)<-[m:minor]-(s:student)\
+return count(s);\
+\
+//Q7\
+MATCH (c:courses)<-[r:register]-(s:student)\
+WHERE c.cname = 'Algorithm'\
+return s.sname,s.snum;\
+\
+//Q8\
+MATCH (s:student)\
+WITH min(s.dob) as minDob\
+MATCH (s1:student)\
+where s1.dob = minDob\
+return s1.sname,s1.snum\
+limit 1;\
+\
+//Q9\
+MATCH (s:student)\
+WITH max(s.dob) as maxDob\
+MATCH (s1:student)\
+where s1.dob = maxDob\
+return s1.sname,s1.snum\
+limit 1;\
+\
+//Q10\
+MATCH (s:student)\
+where s.sname CONTAINS 'n' OR s.sname CONTAINS 'N'\
+return s.sname,s.snum,s.ssn;\
+\
+//Q11\
+MATCH (s:student)\
+where NOT (s.sname CONTAINS 'n' OR s.sname CONTAINS 'N')\
+return s.sname,s.snum,s.ssn;\
+\
+//Q12\
+match (s:student)-[r:register]->(c:courses)\
+return c.cnum,c.cname ,count(s);\
+\
+//Q13\
+match (s:student)-[r:register]->(c:courses)\
+where r.regtime = 'Fall2020'\
+return s.sname;\
+\
+//Q14\
+match (d:department)-[o:offers]->(c:courses)\
+where d.dname = 'Computer Science'\
+return c.cnum,c.cname;\
+\
+//Q15\
+match (d:department)-[o:offers]->(c:courses)\
+where d.dname = 'Computer Science' OR d.dname = 'Landscape Architect'\
+return c.cnum,c.cname;\
+\
+\
+\
+\
+}
