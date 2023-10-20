@@ -3,13 +3,13 @@
 ## Project 1
 Implement a relational data model to design a database that stores some information about a university using three different methods
 
-### Project 1A
+#### Project 1A
 Using SQL scripts to connect to MySQL database
 
-### Project 1B
+#### Project 1B
 Using JDBC connection to connect MySQL database to Java programs
 
-### Project 1C
+#### Project 1C
 Using JavaServerPages(JSP) to connect to MySQL database
 
 ## Project 2
